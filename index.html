@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    canvas{
+        border: 1px solid #000;
+    }
+    input.color{
+        position: absolute;
+        top: 50px;
+        left: 1020px;
+
+    }
+    button.hou{
+        position: absolute;
+        top: 550px;
+        left: 1020px;
+    }
+    button.xian{
+        position: absolute;
+        top: 150px;
+        left: 1020px;
+    }
+    button.kuang{
+        position: absolute;
+        top: 200px;
+        left: 1020px;
+    }
+    button.mian{
+        position: absolute;
+        top: 250px;
+        left: 1020px;
+    }
+    .xianjianbian{
+        position: absolute;
+        top: 300px;
+        left: 1020px;
+    }
+    .yuan{
+        position: absolute;
+        top: 350px;
+        left: 1020px;
+    }
+    .yuanxian{
+        position: absolute;
+        top: 350px;
+        left: 1050px;
+    }
+    .jingxiang{
+        position: absolute;
+        top: 400px;
+        left: 1020px;
+        text-align: center;
+    }
+</style>
+<body>
+<canvas width="1000" height="600"></canvas>
+<input type="color" class="color">
+<input type="text" value="3">
+<button class="hou">后退</button>
+<button type="button" class="xian" >线</button>
+<button type="button" class="kuang" >框</button>
+<button type="button" class="mian" >面</button>
+<button  type="button" class="xianduobian" >线多边</button>
+<button  type="button" class="mianduobian" >面多边</button>
+<button  type="button" class="xianjianbian" >线性渐变</button>
+<button  type="button" class="yuan" >圆</button>
+<button  type="button" class="yuanxian" >线圆</button>
+<button  type="button" class="jingxiang" >径向渐变</button>
+<button  type="button" class="huazi" >画字</button>
+<button  type="button" class="konghuazi" >空心画字</button>
+<button  type="button" class="konghuazi" >空心画字</button>
+</body>
+<script>
+//    var canvas=document.querySelector('canvas');
+//    var colorobj=document.querySelector('input.color');
+//    var pp=canvas.getContext('2d');
+//    var color='#000';
+//    var arr=[];
+//    var but=document.querySelector('button.hou');
+//    var bian=document.querySelector('input[value]');
+//    var n=3;
+//    var gnbut=document.querySelectorAll('button[type]');
+//    var jie;
+
+//    封装
+class canvas{
+    constructor(){
+        this.canvas=document.querySelector('canvas');
+        this.colorobj=document.querySelector('input.color');
+        this.pp=this.canvas.getContext('2d');
+        this.color='#000';
+        this.arr=[];
+        this.but=document.querySelector('button.hou');
+        this.bian=document.querySelector('input[value]');
+        this.n=3;
+        this.gnbut=document.querySelectorAll('button[type]');
+        this.jie;
+        this.img=this.pp.getImageData(0,0,this.canvas.width,this.canvas.height);
+    }
+    xian(x1,y1,x2,y2){
+        this.pp.beginPath();
+        this.pp.moveTo(x1,y1);
+        this.pp.lineTo(x2,y2);
+        this.pp.stroke();
+    }
+    kuang(x1,y1,x2,y2){
+        this.pp.strokeRect(x1,y1,x2-x1,y2-y1);
+    }
+    mian(x1,y1,x2,y2){
+        this.pp.fillRect(x1,y1,x2-x1,y2-y1);
+    }
+    xianduobian(r,deg,ox,oy){
+        this.pp.beginPath();
+        for(var i=0;i<this.n;i++){
+            this.pp.lineTo(r*(Math.cos(deg*i*Math.PI/180))+ox,r*(Math.sin(deg*i*Math.PI/180))+oy);
+        }
+        this.pp.closePath()
+        this.pp.stroke();
+    }
+    mianduobian(r,deg,ox,oy){
+        this.pp.beginPath();
+        for(var i=0;i<this.n;i++){
+            this.pp.lineTo(r*(Math.cos(deg*i*Math.PI/180))+ox,r*(Math.sin(deg*i*Math.PI/180))+oy);
+        }
+        this.pp.closePath()
+        this.pp.fill();
+    }
+    xianjianbian(ox, oy, nx, ny) {
+        var lina = this.pp.createLinearGradient(ox, oy, nx, ny);
+        lina.addColorStop(0, 'red');
+        lina.addColorStop(0.5, 'yellow')
+        lina.addColorStop(1, 'blue')
+        this.pp.fillStyle = lina;
+        this.pp.fillRect(ox, oy, nx - ox, ny - oy);
+    }
+    yuan(ox,oy,r){
+        this.pp.beginPath();
+        this.pp.arc(ox,oy,r,0,2*Math.PI);
+        this.pp.fill()
+    }
+    yuanxian(ox,oy,r){
+        this.pp.beginPath();
+        this.pp.arc(ox,oy,r,0,2*Math.PI);
+        this.pp.stroke()
+    }
+    jingxiang(ox,oy,r){
+        var radial=this.pp.createRadialGradient(ox,oy,0,ox,oy,r);
+        radial.addColorStop(0,'red');
+        radial.addColorStop(1,'yellow');
+        this.pp.fillStyle=radial;
+        this.pp.beginPath();
+        this.pp.arc(ox,oy,r,0,2*Math.PI);
+        this.pp.fill()
+    }
+    huazi(ox,oy){
+        this.pp.font='30px 宋体';
+        this.pp.shadowBlur=10;
+        this.pp.shadowColor='yellow';
+        var zi=prompt('请输入文字');
+        this.pp.fillText(zi,ox,oy);
+
+    }
+    konghuazi(ox,oy){
+        this.pp.font='30px 宋体';
+        this.pp.shadowBlur=10;
+        this.pp.shadowColor='yellow';
+        var zi=prompt('请输入文字');
+        this.pp.strokeText(zi,ox,oy);
+    }
+
+}
+    var canobj=new canvas();
+
+//颜色
+    canobj.colorobj.onchange=function(){
+        canobj.color=this.value;
+
+    }
+    canobj.pp.fillStyle=canobj.color;
+    canobj.pp.strokeStyle=canobj.color;
+
+
+//多边
+    canobj.bian.onchange=function(){
+        canobj.n=this.value;
+    }
+//    功能选择
+    canobj.jie='xian';
+    canobj.gnbut.forEach((value)=>{
+        value.onclick=function(){
+            this.value=this.className;
+            canobj.jie=this.value;
+
+        }
+    });
+
+//100% 动画
+var i=0;
+var t;
+function move(){
+    canobj.pp.clearRect(0,0,canobj.canvas.width,canobj.canvas.height);
+    i++;
+    canobj.pp.fillStyle=canobj.color;
+    canobj.pp.strokeStyle=canobj.color;
+    canobj.pp.lineWidth=10;
+    canobj.pp.beginPath();
+    canobj.pp.arc(200,200,100,0,2*Math.PI/100*i);
+    canobj.pp.stroke()
+    canobj.pp.font='50px 宋体';
+    canobj.pp.textAlign='center';
+    canobj.pp.textBaseline='middle'
+    canobj.pp.fillText(i+'%',200,200);
+    t=window.requestAnimationFrame(move);
+    if(i==100){
+        cancelAnimationFrame(t);
+    }
+}
+move()
+//100% 动画结束
+
+//    功能
+//    var img=canobj.pp.getImageData(0,0,canobj.canvas.width,canobj.canvas.height);
+    canobj.canvas.onmousedown=function(e){
+        var ox= e.offsetX;
+        var oy= e.offsetY;
+        var nx;
+        var ny;
+        canobj.pp.strokeStyle=canobj.color;
+        canobj.pp.fillStyle=canobj.color;
+
+        canobj.canvas.onmousemove=function(e){
+            nx= e.offsetX;
+            ny= e.offsetY;
+            var r=Math.sqrt(Math.pow(nx-ox,2)+Math.pow(ny-oy,2));
+            console.log(r)
+            var deg=360/canobj.n;
+            canobj.pp.clearRect(0,0,canobj.canvas.width,canobj.canvas.height);
+            if(canobj.arr.length>0){
+                let imgdt=canobj.arr[canobj.arr.length-1];
+                canobj.pp.putImageData(imgdt,0,0);
+            }
+            if(canobj.jie=='xian'){
+//                pp.beginPath();
+//                pp.moveTo(ox,oy);
+//                pp.lineTo(nx,ny);
+//                pp.stroke();
+                canobj.xian(ox,oy,nx,ny);
+            }else if(canobj.jie=='kuang'){
+//                pp.strokeRect(ox,oy,nx-ox,ny-oy);
+                canobj.kuang(ox,oy,nx,ny);
+            }else if(canobj.jie=='mian'){
+//                pp.fillRect(ox,oy,nx-ox,ny-oy);
+                canobj.mian(ox,oy,nx,ny);
+            }else if(canobj.jie=='xianduobian'){
+//                pp.beginPath();
+//                for(var i=0;i<n;i++){
+//                    pp.lineTo(r*(Math.cos(deg*i*Math.PI/180))+ox,r*(Math.sin(deg*i*Math.PI/180))+oy);
+//                }
+//                pp.closePath()
+//                pp.stroke();
+                canobj.xianduobian(r,deg,ox,oy);
+            }else if(canobj.jie=='mianduobian'){
+//                pp.beginPath();
+//                for(var i=0;i<n;i++){
+//                    pp.lineTo(r*(Math.cos(deg*i*Math.PI/180))+ox,r*(Math.sin(deg*i*Math.PI/180))+oy);
+//                }
+//                pp.closePath()
+//                pp.fill();
+                canobj.mianduobian(r,deg,ox,oy);
+            }else if(canobj.jie=='xianjianbian'){
+//                var lina=pp.createLinearGradient(ox,oy,nx,ny);
+//                lina.addColorStop(0,'red');
+//                lina.addColorStop(0.5,'yellow')
+//                lina.addColorStop(1,'blue')
+//                pp.fillStyle=lina;
+//                pp.fillRect(ox,oy,nx-ox,ny-oy);
+                canobj.xianjianbian(ox, oy, nx, ny);
+
+            }else if(canobj.jie=='yuan'){
+//                pp.beginPath();
+//                pp.arc(ox,oy,r,0,2*Math.PI);
+//                pp.fill()
+                canobj.yuan(ox,oy,r);
+            }else if(canobj.jie=='yuanxian'){
+//                pp.beginPath();
+//                pp.arc(ox,oy,r,0,2*Math.PI);
+//                pp.stroke()
+                canobj.yuanxian(ox,oy,r);
+            }else if(canobj.jie=='jingxiang'){
+//                var radial=pp.createRadialGradient(ox,oy,0,ox,oy,r);
+//                radial.addColorStop(0,'red');
+//                radial.addColorStop(1,'yellow');
+//                pp.fillStyle=radial;
+//                pp.beginPath();
+//                pp.arc(ox,oy,r,0,2*Math.PI);
+//                pp.fill()
+                canobj.jingxiang(ox,oy,r);
+            }
+    }
+        canobj.canvas.onmouseup=function(){
+            if(canobj.jie=='huazi'){
+//                pp.font='30px 宋体';
+//                pp.shadowBlur=10;
+//                pp.shadowColor='yellow';
+//                var zi=prompt('请输入文字');
+//                pp.fillText(zi,ox,oy);
+                canobj.huazi(ox,oy);
+            }
+            if(canobj.jie=='konghuazi'){
+//                pp.font='30px 宋体';
+//                pp.shadowBlur=10;
+//                pp.shadowColor='yellow';
+//                var zi=prompt('请输入文字');
+//                pp.strokeText(zi,ox,oy);
+                canobj.konghuazi(ox,oy);
+            }
+            canobj.img=canobj.pp.getImageData(0,0,canobj.canvas.width,canobj.canvas.height);
+            canobj.arr.push(canobj.img);
+            canobj.canvas.onmousemove=null;
+        }
+    }
+//    后退
+    canobj.but.onclick=function(){
+        canobj.arr.pop();
+        if(canobj.arr.length==0){
+            alert('不能再退！');
+            canobj.pp.clearRect(0,0,canobj.canvas.width,canobj.canvas.height);
+            return;
+        }else {
+            let imgdt=canobj.arr[canobj.arr.length-1];
+            canobj.pp.putImageData(imgdt,0,0);
+        }
+    }
+
+
+</script>
+</html>
